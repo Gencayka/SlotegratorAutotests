@@ -1,4 +1,6 @@
 import com.Chayka.SpringStarter;
+import com.Chayka.requests.authorize.AuthorizeNegativeResponseValues;
+import com.Chayka.requests.authorize.AuthorizeTester;
 import com.Chayka.requests.getClientToken.GetClientTokenNegativeResponseValues;
 import com.Chayka.requests.getClientToken.GetClientTokenTester;
 import com.Chayka.requests.registerPlayer.RegPlayerNegativeResponseValues;
@@ -20,10 +22,16 @@ public class TestClass {
     private GetClientTokenTester getClientTokenTester;
     @Autowired
     private RegPlayerTester regPlayerTester;
+    @Autowired
+    private AuthorizeTester authorizeTester;
 
     @BeforeEach
-    public void beforeEach(@Autowired GetClientTokenTester getClientTokenTester) {
+    public void beforeEach(@Autowired GetClientTokenTester getClientTokenTester,
+                           @Autowired RegPlayerTester regPlayerTester,
+                           @Autowired AuthorizeTester authorizeTester) {
         this.getClientTokenTester = getClientTokenTester;
+        this.regPlayerTester = regPlayerTester;
+        this.authorizeTester = authorizeTester;
     }
 
     @Test
@@ -83,5 +91,27 @@ public class TestClass {
                 .checkNegativeResponseValidation()
                 .checkNegativeResponseBody(RegPlayerNegativeResponseValues.UNAUTHORIZED)
                 .assertAll();
+    }
+
+    @Test
+    public void authorizePositiveTest() throws IOException {
+        authorizeTester
+                .sendPositiveRequest()
+                .checkPositiveResponseHttpCode()
+                .checkPositiveResponseValidation()
+                .checkPositiveResponseBody()
+                .assertAll();
+        //Assertions.assertEquals(1,2);
+    }
+
+    @Test
+    public void authorizeNegativeTest() throws IOException {
+        authorizeTester
+                .sendRequest("user", "password")
+                .checkNegativeResponseHttpCode(AuthorizeNegativeResponseValues.INCORRECT_USER_CREDENTIALS)
+                .checkNegativeResponseValidation()
+                .checkNegativeResponseBody(AuthorizeNegativeResponseValues.INCORRECT_USER_CREDENTIALS)
+                .assertAll();
+        //Assertions.assertEquals(1,2);
     }
 }
