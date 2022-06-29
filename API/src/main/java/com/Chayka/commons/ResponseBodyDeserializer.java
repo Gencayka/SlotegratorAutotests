@@ -9,7 +9,6 @@ import java.util.List;
 
 public class ResponseBodyDeserializer {
     private static final ObjectMapper mapper = new ObjectMapper();
-    ;
 
     public static <RB extends ResponseBody> RB deserializeResponseBody(String responseBodyAsString,
                                                                        Class<RB> responseBodyClass,

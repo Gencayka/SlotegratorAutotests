@@ -1,6 +1,6 @@
 package com.Chayka.commons;
 
-import com.Chayka.TestConfig;
+import com.Chayka.JsonSchemas;
 import com.Chayka.apiDtos.BadRequestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,27 +24,33 @@ import java.util.*;
  */
 public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends ResponseBody> {
     protected final Logger logger;
+
     protected final RequestSpecification defaultRequestSpecification;
     protected final Map<String, String> defaultHeaders;
     protected final SoftAssertions softAssertions;
+    protected final ObjectMapper mapper;
 
+    protected final String requestUri;
     protected Response testRequestResponse;
     protected B testRequestPositiveResponse;
     protected BadRequestResponse testRequestNegativeResponse;
 
-    public RestApiTester() {
-        logger = LoggerFactory.getLogger(RestApiTester.class.getSimpleName());
+    public RestApiTester(@NotNull String requestUri) {
+        this.logger = LoggerFactory.getLogger(RestApiTester.class.getSimpleName());
 
-        defaultRequestSpecification = RestAssured.given().contentType(ContentType.JSON);
-        defaultHeaders = new HashMap<>();
-        softAssertions = new SoftAssertions();
+        this.defaultRequestSpecification = RestAssured.given().contentType(ContentType.JSON);
+        this.defaultHeaders = new HashMap<>();
+        this.softAssertions = new SoftAssertions();
+        this.mapper = new ObjectMapper();
+
+        this.requestUri = requestUri;
     }
 
     public abstract T checkPositiveResponseValidation();
-    protected abstract void deserializePositiveResponseBody();
-    //protected abstract void checkNegativeResponseMessage(NegativeResponseValues responseValues);
 
-    public T checkNegativeResponseBody(NegativeResponseValues responseValues){
+    protected abstract void deserializePositiveResponseBody();
+
+    public T checkNegativeResponseBody(@NotNull NegativeResponseValues responseValues) {
         deserializeNegativeResponseBody();
         checkNegativeResponseName(responseValues);
         checkNegativeResponseMessage(responseValues);
@@ -53,8 +59,7 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return (T) this;
     }
 
-    public T sendGetRequest(Map<String, String> requestHeaders,
-                            String requestUri) {
+    public T sendGetRequest(@NotNull Map<String, String> requestHeaders) {
         RequestSpecification localRequestSpecification = RestAssured.given().spec(defaultRequestSpecification);
         localRequestSpecification
                 .baseUri(requestUri);
@@ -63,19 +68,31 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return (T) this;
     }
 
-    public T sendGetRequest(String requestUri) {
-        return sendGetRequest(defaultHeaders, requestUri);
+    public T sendGetRequest() {
+        return sendGetRequest(defaultHeaders);
     }
 
-    public T sendPostRequest(Map<String, String> requestHeaders,
-                             String requestUri,
-                                       String requestBodyAsString){
+    public T sendPostRequest(@NotNull Map<String, String> requestHeaders,
+                             @NotNull String requestBodyAsString) {
         RequestSpecification localRequestSpecification = RestAssured.given().spec(defaultRequestSpecification);
         localRequestSpecification
                 .baseUri(requestUri);
         testRequestResponse = sendPostRequest(requestHeaders, localRequestSpecification, requestBodyAsString);
         logger.info(testRequestResponse.asString());
         return (T) this;
+    }
+
+    public T sendPostRequest(@NotNull String requestBodyAsString) {
+        return sendPostRequest(defaultHeaders, requestBodyAsString);
+    }
+
+    public T sendPostRequestWithBearerToken(@NotNull String token,
+                                            @NotNull String requestBodyAsString) {
+        Map<String,String> requestHeaders = new HashMap<>(defaultHeaders);
+        requestHeaders.put(
+                "Authorization",
+                "Bearer " + token);
+        return sendPostRequest(requestHeaders, requestBodyAsString);
     }
 
     public T checkResponseHttpCode(int expectedHttpCode) {
@@ -87,12 +104,12 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return (T) this;
     }
 
-    public T checkNegativeResponseHttpCode(NegativeResponseValues responseValues) {
+    public T checkNegativeResponseHttpCode(@NotNull NegativeResponseValues responseValues) {
         return checkResponseHttpCode(responseValues.getStatus());
     }
 
-    public T checkNegativeResponseValidation(){
-        checkResponseValidation(TestConfig.getUniqueInstance().getBadRequestResponseSchema());
+    public T checkNegativeResponseValidation() {
+        checkResponseValidation(JsonSchemas.getUniqueInstance().getBadRequestResponseSchema());
         return (T) this;
     }
 
@@ -100,8 +117,8 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         softAssertions.assertAll();
     }
 
-    protected Response sendGetRequest(Map<String, String> requestHeaders,
-                                      RequestSpecification requestSpecification) {
+    protected Response sendGetRequest(@NotNull Map<String, String> requestHeaders,
+                                      @NotNull RequestSpecification requestSpecification) {
         RequestSpecification localRequestSpecification = RestAssured.given().spec(requestSpecification);
         for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
             if (header.getValue() != null) {
@@ -117,12 +134,12 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
                 .extract().response();
     }
 
-    protected Response sendPostRequest(Map<String, String> requestHeaders,
-                                       RequestSpecification requestSpecification,
-                                       String requestBodyAsString){
+    protected Response sendPostRequest(@NotNull Map<String, String> requestHeaders,
+                                       @NotNull RequestSpecification requestSpecification,
+                                       @NotNull String requestBodyAsString) {
         RequestSpecification requestSpecificationWithHeaders = RestAssured.given().spec(requestSpecification);
-        for (Map.Entry<String, String> header : requestHeaders.entrySet()){
-            if(header.getValue() != null){
+        for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
+            if (header.getValue() != null) {
                 requestSpecificationWithHeaders.header(header.getKey(), header.getValue());
             }
         }
@@ -136,25 +153,25 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
                 .extract().response();
     }
 
-    protected void checkResponseValidation(JsonSchema responseJsonSchema){
+    protected void checkResponseValidation(@NotNull JsonSchema responseJsonSchema) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ProcessingReport processingMessages = responseJsonSchema.validate(
-                            mapper.readTree(testRequestResponse.asString()), false);
-            if(!processingMessages.isSuccess()){
+                    mapper.readTree(testRequestResponse.asString()), false);
+            if (!processingMessages.isSuccess()) {
                 softAssertions.fail("Response body validation check failed: " + processingMessages);
             }
 
-        } catch (JsonProcessingException | ProcessingException exception){
+        } catch (JsonProcessingException | ProcessingException exception) {
             softAssertions.fail("Failed to check response body validation");
             logger.error(exception.getMessage(), exception);
             softAssertions.assertAll();
         }
     }
 
-    protected <E> void checkIfListsAreEqual(@NotNull List<E> dbList,
+    /*protected <E> void checkIfListsAreEqual(@NotNull List<E> dbList,
                                             @NotNull List<E> responseList,
-                                            @NotNull String nameOfField){
+                                            @NotNull String nameOfField) {
         List<E> dbListLocal = new ArrayList<>(dbList);
         ListIterator<E> dbListLocalIterator = dbListLocal.listIterator();
 
@@ -187,10 +204,10 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
                         nameOfField, responseListElement));
             }
         }
-    }
+    }*/
 
-    protected void deserializeNegativeResponseBody(){
-        if(testRequestNegativeResponse == null){
+    protected void deserializeNegativeResponseBody() {
+        if (testRequestNegativeResponse == null) {
             testRequestNegativeResponse = ResponseBodyDeserializer.deserializeResponseBody(
                     testRequestResponse.asString(),
                     BadRequestResponse.class,
@@ -198,25 +215,25 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         }
     }
 
-    protected void checkNegativeResponseName(NegativeResponseValues responseValues){
+    protected void checkNegativeResponseName(@NotNull NegativeResponseValues responseValues) {
         softAssertions.assertThat(testRequestNegativeResponse.getName())
                 .describedAs("Error name check failed:")
                 .isEqualTo(responseValues.getName());
     }
 
-    protected void checkNegativeResponseMessage(NegativeResponseValues responseValues){
+    protected void checkNegativeResponseMessage(@NotNull NegativeResponseValues responseValues) {
         softAssertions.assertThat(testRequestNegativeResponse.getMessage())
                 .describedAs("Error message check failed:")
                 .isEqualTo(responseValues.getMessage());
     }
 
-    protected void checkNegativeResponseCode(NegativeResponseValues responseValues){
+    protected void checkNegativeResponseCode(@NotNull NegativeResponseValues responseValues) {
         softAssertions.assertThat(testRequestNegativeResponse.getCode())
                 .describedAs("Error status check failed:")
                 .isEqualTo(responseValues.getCode());
     }
 
-    protected void checkNegativeResponseStatus(){
+    protected void checkNegativeResponseStatus() {
         softAssertions.assertThat(testRequestNegativeResponse.getStatus())
                 .describedAs("Error status check failed:")
                 .isEqualTo(testRequestResponse.statusCode());

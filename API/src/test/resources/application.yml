@@ -1,3 +1,20 @@
+commons:
+  base-url: http://test-api.d6.dev.devcaz.com
+get-client-token:
+  base-path: /v2/oauth2/token
+  basic-authentication-username: front_2d6b0a8391742f5d789d7d915755e09e
+  expected-positive-response-code: 200
+  expected-token-type: Bearer
+  expected-token-expiration-time: 86400
+  default-grant_type: client_credentials
+  default-scope: guest:default
+reg-player:
+  base-path: /v2/players
+  expected-positive-response-code: 201
+  default-password: NYf4@M4tgg==
+  default-email-annex: "@example.com"
+  default-name-annex: name
+  default-surname-annex: surname
 logging:
   level:
     org.hibernate.type.descriptor.sql.BasicBinder: DEBUG

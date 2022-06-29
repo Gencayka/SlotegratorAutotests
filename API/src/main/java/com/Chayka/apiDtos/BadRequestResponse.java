@@ -4,8 +4,6 @@ import com.Chayka.commons.ResponseBody;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 public final class BadRequestResponse implements ResponseBody {

@@ -1,62 +1,16 @@
 package com.Chayka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import com.github.fge.jsonschema.main.JsonSchema;
-import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StreamUtils;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 @Getter
+@Setter
 @Component
 @Scope("singleton")
-@PropertySource("classpath:testConfig.properties")
+@ConfigurationProperties(prefix = "commons")
 public class TestConfig {
-    private final String baseUrl;
-    private final String getTokenPath;
-    private final String registerPlayerPath;
-    private final String getPlayersProfilePath;
-    private final String basicAuthenticationUsername;
-
-    private final JsonSchema badRequestResponseSchema;
-    private final JsonSchema accessTokenResponseSchema;
-
-    @Getter
-    private static TestConfig uniqueInstance;
-
-    private TestConfig(@Value("${baseUrl}") String baseUrl,
-                       @Value("${getTokenPath}") String getTokenPath,
-                       @Value("${registerPlayerPath}") String registerPlayerPath,
-                       @Value("${getPlayersProfilePath}") String getPlayersProfilePath,
-                       @Value("${basicAuthenticationUsername}") String basicAuthenticationUsername,
-                       @Value("classpath:schemas/BadRequestResponseSchema.json") Resource badRequestResponseSchema,
-                       @Value("classpath:schemas/AccessTokenResponseSchema.json") Resource accessTokenResponseSchema)
-            throws IOException, ProcessingException {
-        this.baseUrl = baseUrl;
-        this.getTokenPath = getTokenPath;
-        this.registerPlayerPath = registerPlayerPath;
-        this.getPlayersProfilePath = getPlayersProfilePath;
-        this.basicAuthenticationUsername = basicAuthenticationUsername;
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        this.badRequestResponseSchema =
-                JsonSchemaFactory.byDefault().getJsonSchema(
-                        mapper.readTree(
-                                StreamUtils.copyToString(badRequestResponseSchema.getInputStream(), StandardCharsets.UTF_8)));
-        this.accessTokenResponseSchema =
-                JsonSchemaFactory.byDefault().getJsonSchema(
-                        mapper.readTree(
-                                StreamUtils.copyToString(accessTokenResponseSchema.getInputStream(), StandardCharsets.UTF_8)));
-
-        uniqueInstance = this;
-    }
+    private String baseUrl;
 }

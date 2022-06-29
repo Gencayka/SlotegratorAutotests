@@ -1,48 +1,67 @@
 package com.Chayka.requests.getClientToken;
 
+import com.Chayka.JsonSchemas;
 import com.Chayka.TestConfig;
 import com.Chayka.commons.ResponseBodyDeserializer;
 import com.Chayka.commons.RestApiTester;
+import com.Chayka.requests.registerPlayer.RegPlayerTestConfig;
+import org.apache.groovy.json.internal.IO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Component
 @Scope("prototype")
 public final class GetClientTokenTester extends RestApiTester<GetClientTokenTester, GetClientTokenResponseBody> {
-    private final String getTokenUri;
+    private final TestConfig testConfig;
+    private final JsonSchemas jsonSchemas;
+    private final GetClientTokenTestConfig getClientTokenTestConfig;
 
-    public GetClientTokenTester(){
-        super();
-        getTokenUri = TestConfig.getUniqueInstance().getBaseUrl() + TestConfig.getUniqueInstance().getGetTokenPath();
+    public GetClientTokenTester(@Autowired TestConfig testConfig,
+                                @Autowired JsonSchemas jsonSchemas,
+                                @Autowired GetClientTokenTestConfig getClientTokenTestConfig){
+        super(testConfig.getBaseUrl() + getClientTokenTestConfig.getBasePath());
+        this.testConfig = testConfig;
+        this.jsonSchemas = jsonSchemas;
+        this.getClientTokenTestConfig = getClientTokenTestConfig;
     }
 
-    public GetClientTokenTester sendPositiveRequest() {
+    public GetClientTokenTester sendPositiveRequest() throws IOException {
         Map<String,String> requestHeaders = new HashMap<>();
         //TODO
         requestHeaders.put(
                 "Authorization",
                 //"Basic " + Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)));
                 "Basic ZnJvbnRfMmQ2YjBhODM5MTc0MmY1ZDc4OWQ3ZDkxNTc1NWUwOWU6");
-        return sendPostRequest(requestHeaders, getTokenUri, "{\"grant_type\":\"client_credentials\",\"scope\":\"guest:default\"}");
+
+        GetClientTokenRequestBody requestBody = GetClientTokenRequestBody.builder()
+                .grantType(getClientTokenTestConfig.getDefaultGrantType())
+                .scope(getClientTokenTestConfig.getDefaultScope())
+                .build();
+        String requestBodyAsString = mapper.writeValueAsString(requestBody);
+
+        return sendPostRequest(requestHeaders, requestBodyAsString);
     }
 
-    public GetClientTokenTester sendRequest(String username) {
+    public GetClientTokenTester sendRequest(@NotNull String username) {
         Map<String,String> requestHeaders = new HashMap<>();
         requestHeaders.put(
                 "Authorization",
                 "Basic " + Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)));
-        return sendPostRequest(requestHeaders, getTokenUri, "{\"grant_type\":\"client_credentials\",\"scope\":\"guest:default\"}");
+        return sendPostRequest(requestHeaders,"{\"grant_type\":\"client_credentials\",\"scope\":\"guest:default\"}");
     }
 
     public GetClientTokenTester checkPositiveResponseHttpCode(){
-        return checkResponseHttpCode(GetClientTokenTestConfig.getUniqueInstance().getExpectedPositiveResponseCode());
+        return checkResponseHttpCode(getClientTokenTestConfig.getExpectedPositiveResponseCode());
     }
 
     public GetClientTokenTester checkPositiveResponseValidation(){
-        checkResponseValidation(TestConfig.getUniqueInstance().getAccessTokenResponseSchema());
+        checkResponseValidation(JsonSchemas.getUniqueInstance().getAccessTokenResponseSchema());
         return this;
     }
 
@@ -55,7 +74,7 @@ public final class GetClientTokenTester extends RestApiTester<GetClientTokenTest
         return this;
     }
 
-    public String getToken(){
+    public String getToken() throws IOException {
         logger.info("Getting client token");
         sendPositiveRequest();
         checkPositiveResponseHttpCode();
@@ -65,13 +84,13 @@ public final class GetClientTokenTester extends RestApiTester<GetClientTokenTest
     private void checkTokenType() {
         softAssertions.assertThat(testRequestPositiveResponse.getTokenType())
                 .describedAs("Token type check failed:")
-                .isEqualTo(GetClientTokenTestConfig.getUniqueInstance().getExpectedTokenType());
+                .isEqualTo(getClientTokenTestConfig.getExpectedTokenType());
     }
 
     private void checkTokenExpirationTime() {
         softAssertions.assertThat(testRequestPositiveResponse.getExpiresIn())
                 .describedAs("Token expiration time type check failed:")
-                .isEqualTo(GetClientTokenTestConfig.getUniqueInstance().getExpectedTokenExpirationTime());
+                .isEqualTo(getClientTokenTestConfig.getExpectedTokenExpirationTime());
     }
 
     private void checkAccessToken() {

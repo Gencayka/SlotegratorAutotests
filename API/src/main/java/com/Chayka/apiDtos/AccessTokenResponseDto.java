@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AccessTokenRequestDto {
+public class AccessTokenResponseDto {
     @JsonProperty("token_type")
     private String tokenType;
     @JsonProperty("expires_in")
