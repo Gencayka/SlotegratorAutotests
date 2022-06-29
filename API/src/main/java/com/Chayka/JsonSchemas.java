@@ -22,9 +22,6 @@ public class JsonSchemas {
     private final JsonSchema accessTokenResponseSchema;
     private final JsonSchema playerInfoResponseSchema;
 
-    @Getter
-    private static JsonSchemas uniqueInstance;
-
     private JsonSchemas(@Value("classpath:schemas/BadRequestResponseSchema.json") Resource badRequestResponseSchema,
                         @Value("classpath:schemas/AccessTokenResponseSchema.json") Resource accessTokenResponseSchema,
                         @Value("classpath:schemas/PlayerInfoResponseSchema.json") Resource playerInfoResponseSchema)
@@ -40,7 +37,5 @@ public class JsonSchemas {
         this.playerInfoResponseSchema =
                 JsonSchemaFactory.byDefault().getJsonSchema(mapper.readTree(
                         StreamUtils.copyToString(playerInfoResponseSchema.getInputStream(), StandardCharsets.UTF_8)));
-
-        uniqueInstance = this;
     }
 }

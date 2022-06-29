@@ -61,7 +61,7 @@ public final class GetClientTokenTester extends RestApiTester<GetClientTokenTest
     }
 
     public GetClientTokenTester checkPositiveResponseValidation(){
-        checkResponseValidation(JsonSchemas.getUniqueInstance().getAccessTokenResponseSchema());
+        checkResponseValidation(jsonSchemas.getAccessTokenResponseSchema());
         return this;
     }
 
