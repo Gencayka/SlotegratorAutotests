@@ -26,7 +26,8 @@ public class TestConfig {
     private final String getPlayersProfilePath;
     private final String basicAuthenticationUsername;
 
-    private JsonSchema badRequestResponseSchema;
+    private final JsonSchema badRequestResponseSchema;
+    private final JsonSchema accessTokenResponseSchema;
 
     @Getter
     private static TestConfig uniqueInstance;
@@ -36,7 +37,8 @@ public class TestConfig {
                        @Value("${registerPlayerPath}") String registerPlayerPath,
                        @Value("${getPlayersProfilePath}") String getPlayersProfilePath,
                        @Value("${basicAuthenticationUsername}") String basicAuthenticationUsername,
-                       @Value("classpath:BadRequestResponseSchema.json") Resource badRequestResponseSchema)
+                       @Value("classpath:schemas/BadRequestResponseSchema.json") Resource badRequestResponseSchema,
+                       @Value("classpath:schemas/AccessTokenResponseSchema.json") Resource accessTokenResponseSchema)
             throws IOException, ProcessingException {
         this.baseUrl = baseUrl;
         this.getTokenPath = getTokenPath;
@@ -50,6 +52,10 @@ public class TestConfig {
                 JsonSchemaFactory.byDefault().getJsonSchema(
                         mapper.readTree(
                                 StreamUtils.copyToString(badRequestResponseSchema.getInputStream(), StandardCharsets.UTF_8)));
+        this.accessTokenResponseSchema =
+                JsonSchemaFactory.byDefault().getJsonSchema(
+                        mapper.readTree(
+                                StreamUtils.copyToString(accessTokenResponseSchema.getInputStream(), StandardCharsets.UTF_8)));
 
         uniqueInstance = this;
     }

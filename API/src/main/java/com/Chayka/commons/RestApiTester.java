@@ -1,12 +1,14 @@
 package com.Chayka.commons;
 
 import com.Chayka.TestConfig;
+import com.Chayka.apiDtos.BadRequestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.assertj.core.api.SoftAssertions;
@@ -33,20 +35,21 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
     public RestApiTester() {
         logger = LoggerFactory.getLogger(RestApiTester.class.getSimpleName());
 
-        defaultRequestSpecification = RestAssured.given();
+        defaultRequestSpecification = RestAssured.given().contentType(ContentType.JSON);
         defaultHeaders = new HashMap<>();
         softAssertions = new SoftAssertions();
     }
 
     public abstract T checkPositiveResponseValidation();
     protected abstract void deserializePositiveResponseBody();
-    protected abstract void checkNegativeResponseMessage(NegativeResponseValues responseValues);
+    //protected abstract void checkNegativeResponseMessage(NegativeResponseValues responseValues);
 
     public T checkNegativeResponseBody(NegativeResponseValues responseValues){
         deserializeNegativeResponseBody();
-        checkNegativeResponseStatus(responseValues);
+        checkNegativeResponseName(responseValues);
         checkNegativeResponseMessage(responseValues);
-        checkNegativeResponseErrors(responseValues);
+        checkNegativeResponseCode(responseValues);
+        checkNegativeResponseStatus();
         return (T) this;
     }
 
@@ -64,6 +67,17 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return sendGetRequest(defaultHeaders, requestUri);
     }
 
+    public T sendPostRequest(Map<String, String> requestHeaders,
+                             String requestUri,
+                                       String requestBodyAsString){
+        RequestSpecification localRequestSpecification = RestAssured.given().spec(defaultRequestSpecification);
+        localRequestSpecification
+                .baseUri(requestUri);
+        testRequestResponse = sendPostRequest(requestHeaders, localRequestSpecification, requestBodyAsString);
+        logger.info(testRequestResponse.asString());
+        return (T) this;
+    }
+
     public T checkResponseHttpCode(int expectedHttpCode) {
         softAssertions
                 .assertThat(testRequestResponse.statusCode())
@@ -71,6 +85,10 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
                 .isEqualTo(expectedHttpCode);
         softAssertions.assertAll();
         return (T) this;
+    }
+
+    public T checkNegativeResponseHttpCode(NegativeResponseValues responseValues) {
+        return checkResponseHttpCode(responseValues.getStatus());
     }
 
     public T checkNegativeResponseValidation(){
@@ -95,6 +113,25 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
                 .and()
                 .when()
                 .get()
+                .then()
+                .extract().response();
+    }
+
+    protected Response sendPostRequest(Map<String, String> requestHeaders,
+                                       RequestSpecification requestSpecification,
+                                       String requestBodyAsString){
+        RequestSpecification requestSpecificationWithHeaders = RestAssured.given().spec(requestSpecification);
+        for (Map.Entry<String, String> header : requestHeaders.entrySet()){
+            if(header.getValue() != null){
+                requestSpecificationWithHeaders.header(header.getKey(), header.getValue());
+            }
+        }
+
+        return requestSpecificationWithHeaders
+                .and()
+                .body(requestBodyAsString)
+                .when()
+                .post()
                 .then()
                 .extract().response();
     }
@@ -161,15 +198,27 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         }
     }
 
-    protected void checkNegativeResponseStatus(NegativeResponseValues responseValues){
-        softAssertions.assertThat(testRequestNegativeResponse.getStatus())
-                .describedAs("Error status check failed:")
-                .isEqualTo(responseValues.getStatus());
+    protected void checkNegativeResponseName(NegativeResponseValues responseValues){
+        softAssertions.assertThat(testRequestNegativeResponse.getName())
+                .describedAs("Error name check failed:")
+                .isEqualTo(responseValues.getName());
     }
 
-    protected void checkNegativeResponseErrors(NegativeResponseValues responseValues){
-        softAssertions.assertThat(testRequestNegativeResponse.getErrors())
-                .describedAs("Errors list check failed:")
-                .isEqualTo(responseValues.getErrors());
+    protected void checkNegativeResponseMessage(NegativeResponseValues responseValues){
+        softAssertions.assertThat(testRequestNegativeResponse.getMessage())
+                .describedAs("Error message check failed:")
+                .isEqualTo(responseValues.getMessage());
+    }
+
+    protected void checkNegativeResponseCode(NegativeResponseValues responseValues){
+        softAssertions.assertThat(testRequestNegativeResponse.getCode())
+                .describedAs("Error status check failed:")
+                .isEqualTo(responseValues.getCode());
+    }
+
+    protected void checkNegativeResponseStatus(){
+        softAssertions.assertThat(testRequestNegativeResponse.getStatus())
+                .describedAs("Error status check failed:")
+                .isEqualTo(testRequestResponse.statusCode());
     }
 }
