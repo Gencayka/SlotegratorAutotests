@@ -19,20 +19,20 @@ import java.util.*;
 @Scope("prototype")
 public final class GetClientTokenTester extends RestApiTester<GetClientTokenTester, GetClientTokenResponseBody> {
     private final TestConfig testConfig;
-    private final JsonSchemas jsonSchemas;
+    //private final JsonSchemas jsonSchemas;
     private final GetClientTokenTestConfig getClientTokenTestConfig;
 
     public GetClientTokenTester(@Autowired TestConfig testConfig,
                                 @Autowired JsonSchemas jsonSchemas,
-                                @Autowired GetClientTokenTestConfig getClientTokenTestConfig){
-        super(testConfig.getBaseUrl() + getClientTokenTestConfig.getBasePath());
+                                @Autowired GetClientTokenTestConfig getClientTokenTestConfig) {
+        super(jsonSchemas, testConfig.getBaseUrl() + getClientTokenTestConfig.getBasePath());
         this.testConfig = testConfig;
-        this.jsonSchemas = jsonSchemas;
+        //this.jsonSchemas = jsonSchemas;
         this.getClientTokenTestConfig = getClientTokenTestConfig;
     }
 
     public GetClientTokenTester sendPositiveRequest() throws IOException {
-        Map<String,String> requestHeaders = new HashMap<>();
+        Map<String, String> requestHeaders = new HashMap<>();
         //TODO
         requestHeaders.put(
                 "Authorization",
@@ -49,23 +49,23 @@ public final class GetClientTokenTester extends RestApiTester<GetClientTokenTest
     }
 
     public GetClientTokenTester sendRequest(@NotNull String username) {
-        Map<String,String> requestHeaders = new HashMap<>();
+        Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put(
                 "Authorization",
                 "Basic " + Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)));
-        return sendPostRequest(requestHeaders,"{\"grant_type\":\"client_credentials\",\"scope\":\"guest:default\"}");
+        return sendPostRequest(requestHeaders, "{\"grant_type\":\"client_credentials\",\"scope\":\"guest:default\"}");
     }
 
-    public GetClientTokenTester checkPositiveResponseHttpCode(){
+    public GetClientTokenTester checkPositiveResponseHttpCode() {
         return checkResponseHttpCode(getClientTokenTestConfig.getExpectedPositiveResponseCode());
     }
 
-    public GetClientTokenTester checkPositiveResponseValidation(){
+    public GetClientTokenTester checkPositiveResponseValidation() {
         checkResponseValidation(jsonSchemas.getAccessTokenResponseSchema());
         return this;
     }
 
-    public GetClientTokenTester checkPositiveResponseBody(){
+    public GetClientTokenTester checkPositiveResponseBody() {
         deserializePositiveResponseBody();
         checkTokenType();
         checkTokenExpirationTime();
@@ -106,11 +106,11 @@ public final class GetClientTokenTester extends RestApiTester<GetClientTokenTest
     }
 
     @Override
-    protected void deserializePositiveResponseBody(){
-        if(testRequestPositiveResponse == null){
+    protected void deserializePositiveResponseBody() {
+        if (testRequestPositiveResponse == null) {
             testRequestPositiveResponse = ResponseBodyDeserializer.deserializeResponseBody(
-                            testRequestResponse.asString(),
-                            GetClientTokenResponseBody.class, softAssertions);
+                    testRequestResponse.asString(),
+                    GetClientTokenResponseBody.class, softAssertions);
         }
     }
 }

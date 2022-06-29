@@ -17,13 +17,22 @@ reg-player:
   default-surname-annex: surname
 authorize:
   base-path: /v2/oauth2/token
-  basic-authentication-username: front_2d6b0a8391742f5d789d7d915755e09e
   expected-positive-response-code: 200
   expected-token-type: Bearer
   expected-token-expiration-time: 86400
   default-grant_type: password
   default-username: userAB
   default-password: NYf4@M4tgg==
+get-player-profile:
+  base-path: /v2/players/%d
+  expected-positive-response-code: 200
+  default-player-id: 11915
+  default-username: userAB
+  default-email: userAB@example.com
+  default-name: userABname
+  default-surname: userABsurname
+  default-bonuses-allowed: true
+  default-is-verified: false
 logging:
   level:
     org.hibernate.type.descriptor.sql.BasicBinder: DEBUG

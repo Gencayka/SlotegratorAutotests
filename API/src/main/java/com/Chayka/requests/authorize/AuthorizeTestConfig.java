@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "authorize")
 public class AuthorizeTestConfig {
     private String basePath;
-    private String basicAuthenticationUsername;
     private Integer expectedPositiveResponseCode;
     private String expectedTokenType;
     private Integer expectedTokenExpirationTime;

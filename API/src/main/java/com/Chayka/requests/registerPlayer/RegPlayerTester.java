@@ -15,7 +15,7 @@ import java.io.IOException;
 @Component
 @Scope("prototype")
 public final class RegPlayerTester extends RestApiTester<RegPlayerTester, RegPlayerResponseBody> {
-    private final JsonSchemas jsonSchemas;
+    //private final JsonSchemas jsonSchemas;
     private final RegPlayerTestConfig regPlayerTestConfig;
 
     private final GetClientTokenTester getClientTokenTester;
@@ -26,8 +26,8 @@ public final class RegPlayerTester extends RestApiTester<RegPlayerTester, RegPla
                            @Autowired JsonSchemas jsonSchemas,
                            @Autowired RegPlayerTestConfig regPlayerTestConfig,
                            @Autowired GetClientTokenTester getClientTokenTester){
-        super(testConfig.getBaseUrl() + regPlayerTestConfig.getBasePath());
-        this.jsonSchemas = jsonSchemas;
+        super(jsonSchemas, testConfig.getBaseUrl() + regPlayerTestConfig.getBasePath());
+        //this.jsonSchemas = jsonSchemas;
         this.regPlayerTestConfig = regPlayerTestConfig;
 
         this.getClientTokenTester = getClientTokenTester;

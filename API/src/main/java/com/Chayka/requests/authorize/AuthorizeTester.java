@@ -22,23 +22,23 @@ import java.util.Map;
 @Scope("prototype")
 public final class AuthorizeTester extends RestApiTester<AuthorizeTester, AuthorizeResponseBody> {
     private final TestConfig testConfig;
-    private final JsonSchemas jsonSchemas;
+    //private final JsonSchemas jsonSchemas;
     private final AuthorizeTestConfig authorizeTestConfig;
 
     public AuthorizeTester(@Autowired TestConfig testConfig,
                            @Autowired JsonSchemas jsonSchemas,
-                           @Autowired AuthorizeTestConfig authorizeTestConfig){
-        super(testConfig.getBaseUrl() + authorizeTestConfig.getBasePath());
+                           @Autowired AuthorizeTestConfig authorizeTestConfig) {
+        super(jsonSchemas, testConfig.getBaseUrl() + authorizeTestConfig.getBasePath());
         this.testConfig = testConfig;
-        this.jsonSchemas = jsonSchemas;
+        //this.jsonSchemas = jsonSchemas;
         this.authorizeTestConfig = authorizeTestConfig;
     }
 
-    public AuthorizeTester sendRequest(@NotNull String grantType,
-                                       @NotNull String username,
-                                       @NotNull String password)
+    public AuthorizeTester sendRequest(String grantType,
+                                       String username,
+                                       String password)
             throws IOException {
-        Map<String,String> requestHeaders = new HashMap<>();
+        Map<String, String> requestHeaders = new HashMap<>();
         //TODO
         requestHeaders.put(
                 "Authorization",
@@ -55,9 +55,9 @@ public final class AuthorizeTester extends RestApiTester<AuthorizeTester, Author
         return sendPostRequest(requestHeaders, requestBodyAsString);
     }
 
-    public AuthorizeTester sendRequest(@NotNull String username,
-                                       @NotNull String password)
-            throws IOException{
+    public AuthorizeTester sendRequest(String username,
+                                       String password)
+            throws IOException {
         return sendRequest(authorizeTestConfig.getDefaultGrantType(), username, password);
     }
 
@@ -65,29 +65,34 @@ public final class AuthorizeTester extends RestApiTester<AuthorizeTester, Author
         return sendRequest(authorizeTestConfig.getDefaultGrantType(), authorizeTestConfig.getDefaultUsername(), authorizeTestConfig.getDefaultPassword());
     }
 
-    public AuthorizeTester checkPositiveResponseHttpCode(){
+    public String getToken(String username,
+                           String password) throws IOException {
+        logger.info("Getting player token");
+        sendRequest(authorizeTestConfig.getDefaultGrantType(), username, password);
+        checkPositiveResponseHttpCode();
+        return testRequestResponse.then().extract().path("access_token");
+    }
+
+    public String getDefaultPlayerToken() throws IOException {
+        return getToken(authorizeTestConfig.getDefaultUsername(), authorizeTestConfig.getDefaultPassword());
+    }
+
+    public AuthorizeTester checkPositiveResponseHttpCode() {
         return checkResponseHttpCode(authorizeTestConfig.getExpectedPositiveResponseCode());
     }
 
-    public AuthorizeTester checkPositiveResponseValidation(){
-        checkResponseValidation(JsonSchemas.getUniqueInstance().getAccessTokenResponseSchema());
+    public AuthorizeTester checkPositiveResponseValidation() {
+        checkResponseValidation(jsonSchemas.getAccessTokenResponseSchema());
         return this;
     }
 
-    public AuthorizeTester checkPositiveResponseBody(){
+    public AuthorizeTester checkPositiveResponseBody() {
         deserializePositiveResponseBody();
         checkTokenType();
         checkTokenExpirationTime();
         checkAccessToken();
         checkRefreshToken();
         return this;
-    }
-
-    public String getToken() throws IOException {
-        logger.info("Getting client token");
-        sendPositiveRequest();
-        checkPositiveResponseHttpCode();
-        return testRequestResponse.then().extract().path("access_token");
     }
 
     private void checkTokenType() {
@@ -115,11 +120,11 @@ public final class AuthorizeTester extends RestApiTester<AuthorizeTester, Author
     }
 
     @Override
-    protected void deserializePositiveResponseBody(){
-        if(testRequestPositiveResponse == null){
+    protected void deserializePositiveResponseBody() {
+        if (testRequestPositiveResponse == null) {
             testRequestPositiveResponse = ResponseBodyDeserializer.deserializeResponseBody(
-                            testRequestResponse.asString(),
-                            AuthorizeResponseBody.class, softAssertions);
+                    testRequestResponse.asString(),
+                    AuthorizeResponseBody.class, softAssertions);
         }
     }
 }

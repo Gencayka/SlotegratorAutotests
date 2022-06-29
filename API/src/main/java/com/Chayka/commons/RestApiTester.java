@@ -30,12 +30,14 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
     protected final SoftAssertions softAssertions;
     protected final ObjectMapper mapper;
 
-    protected final String requestUri;
+    protected final JsonSchemas jsonSchemas;
+    protected String requestUri;
     protected Response testRequestResponse;
     protected B testRequestPositiveResponse;
     protected BadRequestResponse testRequestNegativeResponse;
 
-    public RestApiTester(@NotNull String requestUri) {
+    public RestApiTester(@NotNull JsonSchemas jsonSchemas,
+                         @NotNull String requestUri) {
         this.logger = LoggerFactory.getLogger(RestApiTester.class.getSimpleName());
 
         this.defaultRequestSpecification = RestAssured.given().contentType(ContentType.JSON);
@@ -43,6 +45,7 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         this.softAssertions = new SoftAssertions();
         this.mapper = new ObjectMapper();
 
+        this.jsonSchemas = jsonSchemas;
         this.requestUri = requestUri;
     }
 
@@ -70,6 +73,14 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
 
     public T sendGetRequest() {
         return sendGetRequest(defaultHeaders);
+    }
+
+    public T sendGetRequestWithBearerToken(@NotNull String token){
+        Map<String,String> requestHeaders = new HashMap<>(defaultHeaders);
+        requestHeaders.put(
+                "Authorization",
+                "Bearer " + token);
+        return sendGetRequest(requestHeaders);
     }
 
     public T sendPostRequest(@NotNull Map<String, String> requestHeaders,
@@ -109,7 +120,7 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
     }
 
     public T checkNegativeResponseValidation() {
-        checkResponseValidation(JsonSchemas.getUniqueInstance().getBadRequestResponseSchema());
+        checkResponseValidation(jsonSchemas.getBadRequestResponseSchema());
         return (T) this;
     }
 

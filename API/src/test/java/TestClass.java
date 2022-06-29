@@ -3,6 +3,8 @@ import com.Chayka.requests.authorize.AuthorizeNegativeResponseValues;
 import com.Chayka.requests.authorize.AuthorizeTester;
 import com.Chayka.requests.getClientToken.GetClientTokenNegativeResponseValues;
 import com.Chayka.requests.getClientToken.GetClientTokenTester;
+import com.Chayka.requests.getPlayerProfile.GetPlayerInfoNegativeResponseValues;
+import com.Chayka.requests.getPlayerProfile.GetPlayerProfileTester;
 import com.Chayka.requests.registerPlayer.RegPlayerNegativeResponseValues;
 import com.Chayka.requests.registerPlayer.RegPlayerTester;
 import org.junit.jupiter.api.*;
@@ -24,14 +26,18 @@ public class TestClass {
     private RegPlayerTester regPlayerTester;
     @Autowired
     private AuthorizeTester authorizeTester;
+    @Autowired
+    private GetPlayerProfileTester getPlayerProfileTester;
 
     @BeforeEach
     public void beforeEach(@Autowired GetClientTokenTester getClientTokenTester,
                            @Autowired RegPlayerTester regPlayerTester,
-                           @Autowired AuthorizeTester authorizeTester) {
+                           @Autowired AuthorizeTester authorizeTester,
+                           @Autowired GetPlayerProfileTester getPlayerProfileTester) {
         this.getClientTokenTester = getClientTokenTester;
         this.regPlayerTester = regPlayerTester;
         this.authorizeTester = authorizeTester;
+        this.getPlayerProfileTester = getPlayerProfileTester;
     }
 
     @Test
@@ -111,6 +117,28 @@ public class TestClass {
                 .checkNegativeResponseHttpCode(AuthorizeNegativeResponseValues.INCORRECT_USER_CREDENTIALS)
                 .checkNegativeResponseValidation()
                 .checkNegativeResponseBody(AuthorizeNegativeResponseValues.INCORRECT_USER_CREDENTIALS)
+                .assertAll();
+        //Assertions.assertEquals(1,2);
+    }
+
+    @Test
+    public void getPlayerInfoPositiveTest() throws IOException {
+        getPlayerProfileTester
+                .sendPositiveRequest()
+                .checkPositiveResponseHttpCode()
+                .checkPositiveResponseValidation()
+                .checkPositiveResponseBody()
+                .assertAll();
+        //Assertions.assertEquals(1,2);
+    }
+
+    @Test
+    public void getPlayerInfoNegativeTest() throws IOException {
+        getPlayerProfileTester
+                .sendRequest(11914, "userAB", "NYf4@M4tgg==")
+                .checkNegativeResponseHttpCode(GetPlayerInfoNegativeResponseValues.PLAYER_NOT_FOUND)
+                .checkNegativeResponseValidation()
+                .checkNegativeResponseBody(GetPlayerInfoNegativeResponseValues.PLAYER_NOT_FOUND)
                 .assertAll();
         //Assertions.assertEquals(1,2);
     }
