@@ -21,7 +21,7 @@ public class TestClass {
     @BeforeAll
     public void beforeClass(){
         Configuration.browser = "chrome";
-        Configuration.baseUrl = testConfig.getBaseUrl();
+        Configuration.baseUrl = testConfig.getBaseUrl() + testConfig.getAdminLoginPath();
         Configuration.browserSize = String.format("%dx%d",
                 testConfig.getDefaultWindowSize().width,
                 testConfig.getDefaultWindowSize().height);
