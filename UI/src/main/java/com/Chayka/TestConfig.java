@@ -1,37 +1,37 @@
 package com.Chayka;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.openqa.selenium.Dimension;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Getter
+@Setter
 @Component
 @Scope("singleton")
-@PropertySource("classpath:testConfig.properties")
+@ConfigurationProperties(prefix = "commons")
 public class TestConfig {
-    private final String baseUrl;
-    private final String adminLoginPath;
-    private final long defaultTimeoutLength;
-    private final long defaultDelayLength;
-    private final Dimension defaultWindowSize;
+    private String baseUrl;
+    private String adminLoginPath;
+    private long defaultTimeoutLength;
+    private long defaultDelayLength;
+    private Dimension defaultWindowSize;
 
-    @Getter
-    private static TestConfig uniqueInstance;
+    @Getter(AccessLevel.NONE)
+    private int defaultWindowXSize;
+    @Getter(AccessLevel.NONE)
+    private int defaultWindowYSize;
 
-    private TestConfig(@Value("${baseUrl}") String baseUrl,
-                       @Value("${adminLoginPath}") String adminLoginPath,
-                       @Value("${defaultTimeoutLength}") long defaultTimeoutLength,
-                       @Value("${defaultDelayLength}") long defaultDelayLength,
-                       @Value("${defaultWindowXSize}") int defaultWindowXSize,
-                       @Value("${defaultWindowYSize}") int defaultWindowYSize) {
-        this.baseUrl = baseUrl;
-        this.adminLoginPath = adminLoginPath;
-        this.defaultTimeoutLength = defaultTimeoutLength;
-        this.defaultDelayLength = defaultDelayLength;
+    public void setDefaultWindowXSize(int defaultWindowXSize) {
+        this.defaultWindowXSize = defaultWindowXSize;
         this.defaultWindowSize = new Dimension(defaultWindowXSize, defaultWindowYSize);
-        uniqueInstance = this;
+    }
+
+    public void setDefaultWindowYSize(int defaultWindowYSize) {
+        this.defaultWindowYSize = defaultWindowYSize;
+        this.defaultWindowSize = new Dimension(defaultWindowXSize, defaultWindowYSize);
     }
 }
