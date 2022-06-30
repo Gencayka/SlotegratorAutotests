@@ -67,7 +67,7 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         localRequestSpecification
                 .baseUri(requestUri);
         testRequestResponse = sendGetRequest(requestHeaders, localRequestSpecification);
-        logger.info(testRequestResponse.asString());
+        logger.info("Response body: " + testRequestResponse.asString());
         return (T) this;
     }
 
@@ -89,7 +89,7 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         localRequestSpecification
                 .baseUri(requestUri);
         testRequestResponse = sendPostRequest(requestHeaders, localRequestSpecification, requestBodyAsString);
-        logger.info(testRequestResponse.asString());
+        logger.info("Response body: " + testRequestResponse.asString());
         return (T) this;
     }
 
@@ -179,43 +179,6 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
             softAssertions.assertAll();
         }
     }
-
-    /*protected <E> void checkIfListsAreEqual(@NotNull List<E> dbList,
-                                            @NotNull List<E> responseList,
-                                            @NotNull String nameOfField) {
-        List<E> dbListLocal = new ArrayList<>(dbList);
-        ListIterator<E> dbListLocalIterator = dbListLocal.listIterator();
-
-        List<E> responseListLocal = new ArrayList<>(responseList);
-        ListIterator<E> responseListLocalIterator = responseListLocal.listIterator();
-
-        while (dbListLocalIterator.hasNext()) {
-            E dbListElement = dbListLocalIterator.next();
-            while (responseListLocalIterator.hasNext()) {
-                E responseListElement = responseListLocalIterator.next();
-                if (responseListElement.equals(dbListElement)) {
-                    dbListLocalIterator.remove();
-                    responseListLocalIterator.remove();
-                    break;
-                }
-            }
-            responseListLocalIterator = responseListLocal.listIterator();
-        }
-
-        if (!dbListLocal.isEmpty()) {
-            for (E dbListElement : dbListLocal) {
-                softAssertions.fail(String.format("%s \"%s\" not found in response",
-                        nameOfField, dbListElement));
-            }
-        }
-
-        if (!responseListLocal.isEmpty()) {
-            for (E responseListElement : responseListLocal) {
-                softAssertions.fail(String.format("%s \"%s\" was found in response, but not in DB",
-                        nameOfField, responseListElement));
-            }
-        }
-    }*/
 
     protected void deserializeNegativeResponseBody() {
         if (testRequestNegativeResponse == null) {

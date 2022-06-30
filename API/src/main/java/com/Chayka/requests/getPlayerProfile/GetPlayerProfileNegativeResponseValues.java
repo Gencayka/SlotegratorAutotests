@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum GetPlayerInfoNegativeResponseValues implements NegativeResponseValues {
+public enum GetPlayerProfileNegativeResponseValues implements NegativeResponseValues {
     PLAYER_NOT_FOUND("Not Found",
             "Object not found: %d",
             0,

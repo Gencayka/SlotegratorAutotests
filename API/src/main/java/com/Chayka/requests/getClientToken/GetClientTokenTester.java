@@ -17,7 +17,8 @@ import java.util.*;
 
 @Component
 @Scope("prototype")
-public final class GetClientTokenTester extends RestApiTester<GetClientTokenTester, GetClientTokenResponseBody> {
+public final class GetClientTokenTester
+        extends RestApiTester<GetClientTokenTester, GetClientTokenResponseBody> {
     private final TestConfig testConfig;
     //private final JsonSchemas jsonSchemas;
     private final GetClientTokenTestConfig getClientTokenTestConfig;

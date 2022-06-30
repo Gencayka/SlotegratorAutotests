@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public final class BadRequestResponse implements ResponseBody {
+public class BadRequestResponse implements ResponseBody {
     private String name;
     private String message;
     private Integer code;
