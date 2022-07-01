@@ -1,4 +1,4 @@
-package com.Chayka.uiElements;
+package com.Chayka.ui.uiElements;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AdminLoginPageUIECN {
+
     INPUT_FORM("form-control");
 
     private final String className;

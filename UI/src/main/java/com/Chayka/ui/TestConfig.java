@@ -1,4 +1,4 @@
-package com.Chayka;
+package com.Chayka.ui;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,9 +16,14 @@ import org.springframework.stereotype.Component;
 public class TestConfig {
     private String baseUrl;
     private String adminLoginPath;
+    private String dashboardPath;
+    private String playersPath;
+    private String defaultBrowser;
     private long defaultTimeoutLength;
     private long defaultDelayLength;
     private Dimension defaultWindowSize;
+    private String adminLogin;
+    private String adminPassword;
 
     @Getter(AccessLevel.NONE)
     private int defaultWindowXSize;

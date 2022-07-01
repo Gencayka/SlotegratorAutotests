@@ -1,6 +1,5 @@
 package com.Chayka.api.requests;
 
-import com.Chayka.api.ApiTests;
 import com.Chayka.api.requests.authorize.AuthorizeTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

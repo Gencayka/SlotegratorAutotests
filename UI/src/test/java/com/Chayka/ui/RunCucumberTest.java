@@ -1,4 +1,4 @@
-package com.Chayka;
+package com.Chayka.ui;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;

@@ -1,5 +1,6 @@
-package com.Chayka.api;
+package com.Chayka.api.requests;
 
+import com.Chayka.api.SpringStarter;
 import com.Chayka.api.commons.RestApiTester;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;

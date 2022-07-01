@@ -1,4 +1,4 @@
-package com.Chayka;
+package com.Chayka.ui;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

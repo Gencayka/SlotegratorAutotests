@@ -1,9 +1,8 @@
-package com.Chayka.pageObjects;
+package com.Chayka.ui.pageObjects;
 
-import com.Chayka.TestConfig;
+import com.Chayka.ui.TestConfig;
 import org.assertj.core.api.SoftAssertions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
