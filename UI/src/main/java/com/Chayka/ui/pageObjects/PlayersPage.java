@@ -12,6 +12,8 @@ import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Condition.*;
 
+import static com.Chayka.ui.uiElements.PlayersPageUIECN.*;
+
 public class PlayersPage extends MainPageObject {
     private final SelenideElement playerManagementHeading;
     private final SelenideElement playersTable;
@@ -19,10 +21,11 @@ public class PlayersPage extends MainPageObject {
     private final ElementsCollection tableRows;
 
     public PlayersPage() {
-        playerManagementHeading = $$(byClassName("panel-heading")).find(exactText(" Player management\t\t"));
+        playerManagementHeading = $$(byClassName(PLAYER_MANAGEMENT_HEADING.getClassName()))
+                .find(exactText(" Player management\t\t"));
         playersTable = $(byClassName("table"));
         tableRows = playersTable.$(byTagName("tbody")).$$(byTagName("tr"));
-        columnsButtons = $$(byClassName("sort-link"));
+        columnsButtons = $$(byClassName(COLUMN_BUTTON.getClassName()));
     }
 
     public PlayersPage checkIfItsPlayersPage() {

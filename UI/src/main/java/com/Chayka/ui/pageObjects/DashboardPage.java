@@ -9,11 +9,13 @@ import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Condition.*;
 
+import static com.Chayka.ui.uiElements.DashboardPageUIECN.*;
+
 public class DashboardPage extends MainPageObject{
     private final SelenideElement depositsPanel;
 
     public DashboardPage(){
-        depositsPanel = $(byClassName("col-sm-12"));
+        depositsPanel = $(byClassName(DEPOSIT_PANEL.getClassName()));
     }
     public DashboardPage checkIfItsDashboardPage(){
         depositsPanel.should(exist);

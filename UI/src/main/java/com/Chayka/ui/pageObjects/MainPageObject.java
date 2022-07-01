@@ -9,6 +9,8 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.$;
 
+import static com.Chayka.ui.uiElements.MainPageUIECN.*;
+
 public abstract class MainPageObject extends SlotegratorPageObject {
     @Autowired
     @Getter
@@ -18,49 +20,16 @@ public abstract class MainPageObject extends SlotegratorPageObject {
     protected PlayersPage playersPage;
 
     protected final SelenideElement profileButton;
-
     protected final SelenideElement activeSideButton;
-
-    //protected final SelenideElement dashboardButton;
-
-    //protected final SelenideElement usersButton;
-    //protected final SelenideElement playersButton;
-    //protected final SelenideElement playersRegistrationsButton;
-
     protected final ElementsCollection sideButtons;
     private final ElementsCollection sideSubButtons;
 
     public MainPageObject(){
-        profileButton = $(byClassName("nav-profile"));
-
-        /*ElementsCollection*/ sideButtons = $(byClassName("main-side-menu")).$$(byTagName("li"));
+        profileButton = $(byClassName(PROFILE_BUTTON.getClassName()));
+        sideButtons = $(byClassName(SIDE_BUTTONS.getClassName())).$$(byTagName("li"));
         activeSideButton = sideButtons.find(cssClass("active"));
-
-        //dashboardButton = sideButtons.find(exactText("Dashboard"));
-
-        //usersButton = sideButtons.find(exactText("Users"));
-        //ElementsCollection usersSubButtons = activeSideButton.$$(byTagName("li"));
-        //playersButton = usersSubButtons.find(text("Players"));
-        //playersRegistrationsButton = usersSubButtons.find(text("Players registrations"));
         sideSubButtons = activeSideButton.$$(byTagName("li"));
     }
-
-    /*public DashboardPage goToDashboardPage(){
-        if(dashboardButton!=activeSideButton){
-            dashboardButton.click();
-        }
-        return dashboardPage.checkIfItsDashboardPage();
-    }
-
-    public PlayersPage goToPlayersPage(){
-        if(usersButton!=activeSideButton){
-            usersButton.click();
-        }
-        if(playersButton!=activeSideButton){
-            playersButton.click();
-        }
-        return playersPage;
-    }*/
 
     public void clickSideButton(String buttonName){
         SelenideElement sideButton = sideButtons.find(exactText(buttonName));

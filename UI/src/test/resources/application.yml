@@ -8,8 +8,8 @@ commons:
   default-delay-length: 200
   default-window-x-size: 1400
   default-window-y-size: 800
-  admin-login: "***"
-  admin-password: "***"
+  admin-login: admin1
+  admin-password: "[9k<k8^z!+$$GkuP"
 spring:
   main:
     allow-circular-references: true
