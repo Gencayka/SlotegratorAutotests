@@ -12,6 +12,9 @@ import static com.codeborne.selenide.Condition.*;
 
 import static com.Chayka.ui.uiElements.AdminLoginPageUIECN.*;
 
+/**
+ * Page Object that represents Admin Login page of the application
+ */
 public class AdminLoginPage extends SlotegratorPageObject{
     private final SelenideElement loginInputForm;
     private final SelenideElement passwordInputForm;
@@ -50,6 +53,10 @@ public class AdminLoginPage extends SlotegratorPageObject{
         return this;
     }
 
+    /**
+     * Authorizes as Admin successfully and checks that authorizes was really successful
+     * @return Dashboard PO
+     */
     public DashboardPage authorizeAsAdmin(){
         this
                 .openAdminLoginPage()

@@ -11,6 +11,10 @@ import static com.codeborne.selenide.Selenide.$;
 
 import static com.Chayka.ui.uiElements.MainPageUIECN.*;
 
+/**
+ * Abstract Page Object that represents main page of the application
+ * <br>Each child class represents single right side button page
+ */
 public abstract class MainPageObject extends SlotegratorPageObject {
     @Autowired
     @Getter
@@ -31,6 +35,11 @@ public abstract class MainPageObject extends SlotegratorPageObject {
         sideSubButtons = activeSideButton.$$(byTagName("li"));
     }
 
+    /**
+     * Searches for button on the right side panel by its name and clicks on it,
+     * if it's not active already
+     * <br>Fails the test if button wasn't found
+     */
     public void clickSideButton(String buttonName){
         SelenideElement sideButton = sideButtons.find(exactText(buttonName));
         sideButton.should(exist);
@@ -39,6 +48,11 @@ public abstract class MainPageObject extends SlotegratorPageObject {
         }
     }
 
+    /**
+     * Searches for subbutton (button that shows after clicking on some higher level button)
+     * on the right side panel by its name and clicks on it, if it's not active already
+     * <br>Fails the test if button wasn't found
+     */
     public void clickSideSubButton(String buttonName){
         SelenideElement sideSubButton = sideSubButtons.find(exactText(buttonName));
         sideSubButton.should(exist);
@@ -47,17 +61,28 @@ public abstract class MainPageObject extends SlotegratorPageObject {
         }
     }
 
+    /**
+     * Goes to the Dashboard page and checks if transition succeed
+     * @return Dashboard PO
+     */
     public DashboardPage goToDashboardPage(){
         clickSideButton("Dashboard");
         return dashboardPage.checkIfItsDashboardPage();
     }
 
+    /**
+     * Goes to the Players page and checks if transition succeed
+     * @return Players PO
+     */
     public PlayersPage goToPlayersPage(){
         clickSideButton("Users");
         clickSideSubButton("Players");
         return playersPage.checkIfItsPlayersPage();
     }
 
+    /**
+     * Goes to some page by its name and checks if transition succeed
+     */
     public void goToPage(String pageName){
         switch (pageName) {
             case "Dashboard" -> goToDashboardPage();

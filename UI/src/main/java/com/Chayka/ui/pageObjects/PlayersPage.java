@@ -14,6 +14,9 @@ import static com.codeborne.selenide.Condition.*;
 
 import static com.Chayka.ui.uiElements.PlayersPageUIECN.*;
 
+/**
+ * Page Object that represents Players page of the application
+ */
 public class PlayersPage extends MainPageObject {
     private final SelenideElement playerManagementHeading;
     private final SelenideElement playersTable;
@@ -28,7 +31,12 @@ public class PlayersPage extends MainPageObject {
         columnsButtons = $$(byClassName(COLUMN_BUTTON.getClassName()));
     }
 
+    /**
+     * Check if currently user really is on the Players page
+     * @return Players PO
+     */
     public PlayersPage checkIfItsPlayersPage() {
+        //Crutch to make Selenide to wait until Players page won't be loaded
         playerManagementHeading.should(exist);
         Assertions.assertThat(WebDriverRunner.getWebDriver().getCurrentUrl())
                 .isEqualTo(testConfig.getBaseUrl() + testConfig.getPlayersPath());
@@ -40,6 +48,11 @@ public class PlayersPage extends MainPageObject {
         return this;
     }
 
+    /**
+     * Searches for players table column name button by its name and clicks on it
+     * <br>Fails the test if button wasn't found
+     * @return Players PO
+     */
     public PlayersPage clickOnColumnName(String columnName) {
         SelenideElement columnButton = columnsButtons.find(exactText(columnName));
         columnButton.should(exist);
@@ -47,9 +60,14 @@ public class PlayersPage extends MainPageObject {
         return this;
     }
 
-    public PlayersPage checkTableSortByStringField(String fieldName) {
+    /**
+     * Checks if table is sorted correctly by some column (currently checks only ascending order)
+     * @return Players PO
+     */
+    public PlayersPage checkTableSortByColumn(String columnName) {
+        //Delay to give sorting some time to work
         launchDelay(2000);
-        int fieldIndex = switch (fieldName) {
+        int fieldIndex = switch (columnName) {
             case "Username" -> 1;
             case "External ID" -> 2;
             case "Name" -> 3;
@@ -58,6 +76,7 @@ public class PlayersPage extends MainPageObject {
         };
 
         List<String> usernamesList = new ArrayList<>();
+        //No, you can't use enhanced 'for' with ElementsCollection
         for (int i = 0; i < tableRows.size(); i++) {
             usernamesList.add(tableRows.get(i).$$(byTagName("td")).get(fieldIndex).getText());
         }

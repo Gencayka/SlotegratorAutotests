@@ -5,6 +5,9 @@ import org.assertj.core.api.SoftAssertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Abstract Page Object class, contains some common fields and methods
+ */
 @Component
 public abstract class SlotegratorPageObject {
     @Autowired

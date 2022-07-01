@@ -27,6 +27,6 @@ public class PlayersPageSteps extends UiTests{
 
     @Then("players table is sorted by {string}")
     public void playersTableIsSortedBy(String columnName) {
-        playersPage.checkTableSortByStringField(columnName);
+        playersPage.checkTableSortByColumn(columnName);
     }
 }
