@@ -1,7 +1,7 @@
 # SlotegratorAutotests
 Test assignment to apply for a QA Automation Engineer job. Project is written to test some features of the following website: http://test-app.d6.dev.devcaz.com
-Sadly I didn't get acces to the DB, so no DB checks(
-!!ATTENTION!! Cloned code won't work as I replaced all authentication data with "***", to launch tests they are need to be written back to the config .yml files
+<br>Sadly I didn't get acces to the DB, so no DB checks(
+<br>!!ATTENTION!! Cloned code won't work as I replaced all authentication data with "***", to launch tests they are need to be written back to the config .yml files
 
 # API tests
 To launch tests, run the TestSuite class
@@ -33,5 +33,5 @@ Lombok | Reducing amount of junk code
 Logback | Logging
 
 Short description:
-Gees, that Cucumber is weird
-Cucumber is used to describe test cases. Page Objects are used to store methods to interact with different pages. If some UI element needs to be searched by CSS class, then it's written to corresponded enum for easer updating in case of UI changes. All pages have only one config class
+<br>Gees, that Cucumber is weird
+<br>Cucumber is used to describe test cases. Page Objects are used to store methods to interact with different pages. If some UI element needs to be searched by CSS class, then it's written to corresponded enum for easer updating in case of UI changes. All pages have only one config class
