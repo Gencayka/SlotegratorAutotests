@@ -3,7 +3,7 @@ Test assignment to apply for a QA Automation Engineer job. Project is written to
 Sadly I didn't get acces to the DB, so no DB checks(
 !!ATTENTION!! Cloned code won't work as I replaced all authentication data with "***", to launch tests they are need to be written back to the config .yml files
 
-#API tests
+# API tests
 To launch tests, run the TestSuite class
 
 Tech Stack:
@@ -16,11 +16,10 @@ Lombok | Reducing amount of junk code
 Logback | Logging
 
 Short description:
-Every request has its own tester. Since tester stores test results info a new tester is created for each test case. Each tester is inherited from abstract RestApiTester, that contains some common methods and fields. RestApiTester contains generic parameters for *Tester (so common methods could return corresponded types) and *ResponseBody (for storing deserialized response body)
+<br>Every request has its own tester. Since tester stores test results info a new tester is created for each test case. Each tester is inherited from abstract RestApiTester, that contains some common methods and fields. RestApiTester contains generic parameters for *Tester (so common methods could return corresponded types) and *ResponseBody (for storing deserialized response body)
 Also every request has its own config class (all configs are parsed from single application.yml file)
 
-#UI tests
-#API tests
+# UI tests
 To launch tests, run the RunCucumberTest class
 
 Tech Stack:
