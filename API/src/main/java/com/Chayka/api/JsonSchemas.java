@@ -14,6 +14,9 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Config class for storing JSON-schemas
+ */
 @Getter
 @Component
 @Scope("singleton")

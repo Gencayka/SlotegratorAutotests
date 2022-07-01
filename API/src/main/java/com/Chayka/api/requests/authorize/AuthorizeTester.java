@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class for testing the Authorize request
+ */
 @Component
 @Scope("prototype")
 public final class AuthorizeTester extends RestApiTester<AuthorizeTester, AuthorizeResponseBody> {
@@ -57,6 +60,13 @@ public final class AuthorizeTester extends RestApiTester<AuthorizeTester, Author
         return sendRequest(authorizeTestConfig.getDefaultGrantType(), authorizeTestConfig.getDefaultUsername(), authorizeTestConfig.getDefaultPassword());
     }
 
+    /**
+     * Gets player's token for testing other requests
+     * @param username player's username
+     * @param password player's password
+     * @return token
+     * @throws IOException
+     */
     public String getToken(String username,
                            String password) throws IOException {
         logger.info("Getting player token");
@@ -65,6 +75,11 @@ public final class AuthorizeTester extends RestApiTester<AuthorizeTester, Author
         return testRequestResponse.then().extract().path("access_token");
     }
 
+    /**
+     * Gets default player's token for testing other requests
+     * @return token
+     * @throws IOException
+     */
     public String getDefaultPlayerToken() throws IOException {
         return getToken(authorizeTestConfig.getDefaultUsername(), authorizeTestConfig.getDefaultPassword());
     }
@@ -78,6 +93,10 @@ public final class AuthorizeTester extends RestApiTester<AuthorizeTester, Author
         return this;
     }
 
+    /**
+     * Checks if positive response body fields corresponds to expected values
+     * @return this tester
+     */
     public AuthorizeTester checkPositiveResponseBody() {
         deserializePositiveResponseBody();
         checkTokenType();

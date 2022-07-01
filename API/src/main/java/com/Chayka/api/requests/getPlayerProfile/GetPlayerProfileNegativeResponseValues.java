@@ -4,6 +4,9 @@ import com.Chayka.api.commons.NegativeResponseValues;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Enum holds Get Player Profile negative response expected values
+ */
 @Getter
 @AllArgsConstructor
 public enum GetPlayerProfileNegativeResponseValues implements NegativeResponseValues {

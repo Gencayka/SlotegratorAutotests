@@ -51,10 +51,29 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         this.requestUri = requestUri;
     }
 
+    /**
+     * Checks if positive response HTTP-code corresponds to expected value
+     * @return this tester
+     */
+    public abstract T checkPositiveResponseHttpCode();
+
+    /**
+     * Checks validation of the positive response body
+     * @return this tester
+     */
     public abstract T checkPositiveResponseValidation();
 
+    /**
+     * Deserializes positive response body from String to Java object.
+     * Writes Java object to "testRequestPositiveResponse" field
+     */
     protected abstract void deserializePositiveResponseBody();
 
+    /**
+     * Checks fields of negative response body
+     * @param responseValues expected response values
+     * @return this tester
+     */
     public T checkNegativeResponseBody(@NotNull NegativeResponseValues responseValues) {
         deserializeNegativeResponseBody();
         checkNegativeResponseName(responseValues);
@@ -64,6 +83,11 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return (T) this;
     }
 
+    /**
+     * Sends GET request to service and writes response to "testRequestResponse" fields
+     * @param requestHeaders request headers, that being added to default headers
+     * @return this tester
+     */
     public T sendGetRequest(@NotNull Map<String, String> requestHeaders) {
         RequestSpecification localRequestSpecification = RestAssured.given().spec(defaultRequestSpecification);
         localRequestSpecification
@@ -73,10 +97,21 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return (T) this;
     }
 
+    /**
+     * Sends GET request to service and writes response to "testRequestResponse" fields.
+     * Request has default headers
+     * @return this tester
+     */
     public T sendGetRequest() {
         return sendGetRequest(defaultHeaders);
     }
 
+    /**
+     * Sends GET request to service and writes response to "testRequestResponse" fields.
+     * Request has bearer token in headers
+     * @param token bearer token value
+     * @return this tester
+     */
     public T sendGetRequestWithBearerToken(@NotNull String token){
         Map<String,String> requestHeaders = new HashMap<>(defaultHeaders);
         requestHeaders.put(
@@ -85,6 +120,11 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return sendGetRequest(requestHeaders);
     }
 
+    /**
+     * Sends POST request to service and writes response to "testRequestResponse" fields.
+     * @param requestHeaders request headers, that being added to default headers
+     * @return this tester
+     */
     public T sendPostRequest(@NotNull Map<String, String> requestHeaders,
                              @NotNull String requestBodyAsString) {
         RequestSpecification localRequestSpecification = RestAssured.given().spec(defaultRequestSpecification);
@@ -95,10 +135,20 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return (T) this;
     }
 
+    /**
+     * Sends POST request to service and writes response to "testRequestResponse" fields.
+     * Request has default headers
+     * @return this tester
+     */
     public T sendPostRequest(@NotNull String requestBodyAsString) {
         return sendPostRequest(defaultHeaders, requestBodyAsString);
     }
 
+    /**
+     * Sends POST request to service and writes response to "testRequestResponse" fields.
+     * Request has basic authentication token based on username and password
+     * @return this tester
+     */
     public T sendPostRequestWithBasicAuth(@NotNull String username,
                                           @NotNull String password,
                              @NotNull String requestBodyAsString) {
@@ -110,6 +160,12 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return sendPostRequest(requestHeaders, requestBodyAsString);
     }
 
+    /**
+     * Sends POST request to service and writes response to "testRequestResponse" fields.
+     * Request has bearer token in headers
+     * @param token bearer token value
+     * @return this tester
+     */
     public T sendPostRequestWithBearerToken(@NotNull String token,
                                             @NotNull String requestBodyAsString) {
         Map<String,String> requestHeaders = new HashMap<>(defaultHeaders);
@@ -119,6 +175,10 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return sendPostRequest(requestHeaders, requestBodyAsString);
     }
 
+    /**
+     * Checks if response HTTP-code corresponds to expected value
+     * @return this tester
+     */
     public T checkResponseHttpCode(int expectedHttpCode) {
         softAssertions
                 .assertThat(testRequestResponse.statusCode())
@@ -128,19 +188,35 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         return (T) this;
     }
 
+    /**
+     * Checks if negative response HTTP-code corresponds to expected value
+     * @param responseValues expected response values
+     * @return this tester
+     */
     public T checkNegativeResponseHttpCode(@NotNull NegativeResponseValues responseValues) {
         return checkResponseHttpCode(responseValues.getStatus());
     }
 
+    /**
+     * Checks validation of the negative response body
+     * @return this tester
+     */
     public T checkNegativeResponseValidation() {
         checkResponseValidation(jsonSchemas.getBadRequestResponseSchema());
         return (T) this;
     }
 
+    /**
+     * Calls test errors assertion
+     */
     public void assertAll() {
         softAssertions.assertAll();
     }
 
+    /**
+     * Sends GET request to service and writes response to "testRequestResponse" fields
+     * @return this tester
+     */
     protected Response sendGetRequest(@NotNull Map<String, String> requestHeaders,
                                       @NotNull RequestSpecification requestSpecification) {
         RequestSpecification localRequestSpecification = RestAssured.given().spec(requestSpecification);
@@ -158,6 +234,10 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
                 .extract().response();
     }
 
+    /**
+     * Sends POST request to service and writes response to "testRequestResponse" fields
+     * @return this tester
+     */
     protected Response sendPostRequest(@NotNull Map<String, String> requestHeaders,
                                        @NotNull RequestSpecification requestSpecification,
                                        @NotNull String requestBodyAsString) {
@@ -177,6 +257,9 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
                 .extract().response();
     }
 
+    /**
+     * Checks validation of the response body with JSON-schema
+     */
     protected void checkResponseValidation(@NotNull JsonSchema responseJsonSchema) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -193,6 +276,10 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         }
     }
 
+    /**
+     * Deserializes negative response body from String to Java object.
+     * Writes Java object to "testRequestNegativeResponse" field
+     */
     protected void deserializeNegativeResponseBody() {
         if (testRequestNegativeResponse == null) {
             testRequestNegativeResponse = ResponseBodyDeserializer.deserializeResponseBody(
@@ -202,24 +289,39 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
         }
     }
 
+    /**
+     * Checks if "name" negative response body field corresponds to expected value
+     * @param responseValues expected response values
+     */
     protected void checkNegativeResponseName(@NotNull NegativeResponseValues responseValues) {
         softAssertions.assertThat(testRequestNegativeResponse.getName())
                 .describedAs("Error name check failed:")
                 .isEqualTo(responseValues.getName());
     }
 
+    /**
+     * Checks if "message" negative response body field corresponds to expected value
+     * @param responseValues expected response values
+     */
     protected void checkNegativeResponseMessage(@NotNull NegativeResponseValues responseValues) {
         softAssertions.assertThat(testRequestNegativeResponse.getMessage())
                 .describedAs("Error message check failed:")
                 .isEqualTo(responseValues.getMessage());
     }
 
+    /**
+     * Checks if "code" negative response body field corresponds to expected value
+     * @param responseValues expected response values
+     */
     protected void checkNegativeResponseCode(@NotNull NegativeResponseValues responseValues) {
         softAssertions.assertThat(testRequestNegativeResponse.getCode())
-                .describedAs("Error status check failed:")
+                .describedAs("Error code check failed:")
                 .isEqualTo(responseValues.getCode());
     }
 
+    /**
+     * Checks if "status" negative response body field corresponds to expected value
+     */
     protected void checkNegativeResponseStatus() {
         softAssertions.assertThat(testRequestNegativeResponse.getStatus())
                 .describedAs("Error status check failed:")

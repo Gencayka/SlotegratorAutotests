@@ -5,6 +5,9 @@ import com.Chayka.api.commons.ResponseBody;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Class to deserialize Get Player Profile response body to
+ */
 @Getter
 @Setter
 public final class GetPlayerProfileResponseBody

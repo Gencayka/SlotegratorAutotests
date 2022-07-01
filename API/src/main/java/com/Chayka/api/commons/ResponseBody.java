@@ -1,7 +1,8 @@
 package com.Chayka.api.commons;
 
 /**
- * Interface for *ResponseBody classes
+ * Interface for *ResponseBody classes,
+ * that are required to deserialize response body to
  */
 public interface ResponseBody {
 }

@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Class for testing the Get Player Profile request
+ */
 @Component
 @Scope("prototype")
 public final class GetPlayerProfileTester extends RestApiTester<GetPlayerProfileTester, GetPlayerProfileResponseBody> {
@@ -54,6 +57,10 @@ public final class GetPlayerProfileTester extends RestApiTester<GetPlayerProfile
         return this;
     }
 
+    /**
+     * Checks if positive response body fields corresponds to expected values
+     * @return this tester
+     */
     public GetPlayerProfileTester checkPositiveResponseBody() {
         deserializePositiveResponseBody();
         checkPlayerId();

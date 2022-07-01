@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/**
+ * Class for testing the Get Client Token request
+ */
 @Component
 @Scope("prototype")
 public final class GetClientTokenTester
@@ -55,6 +58,10 @@ public final class GetClientTokenTester
         return this;
     }
 
+    /**
+     * Checks if positive response body fields corresponds to expected values
+     * @return this tester
+     */
     public GetClientTokenTester checkPositiveResponseBody() {
         deserializePositiveResponseBody();
         checkTokenType();
@@ -64,6 +71,11 @@ public final class GetClientTokenTester
         return this;
     }
 
+    /**
+     * Gets client's token for testing other requests
+     * @return token
+     * @throws IOException
+     */
     public String getToken() throws IOException {
         logger.info("Getting client token");
         sendPositiveRequest();

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Class for testing the Register Player request
+ */
 @Component
 @Scope("prototype")
 public final class RegPlayerTester extends RestApiTester<RegPlayerTester, RegPlayerResponseBody> {
@@ -31,6 +34,12 @@ public final class RegPlayerTester extends RestApiTester<RegPlayerTester, RegPla
         this.getClientTokenTester = getClientTokenTester;
     }
 
+    /**
+     * Sends request to register new player with parameters generated with player username.
+     * Request will return positive response, if DB doesn't contain a player with the same username yet
+     * @return this tester
+     * @throws IOException
+     */
     public RegPlayerTester sendPositiveRequest(@NotNull String playerUsername) throws IOException {
         requestBody = RegPlayerRequestBody.builder()
                 .username(playerUsername)
@@ -54,6 +63,10 @@ public final class RegPlayerTester extends RestApiTester<RegPlayerTester, RegPla
         return this;
     }
 
+    /**
+     * Checks if positive response body fields corresponds to expected values
+     * @return this tester
+     */
     public RegPlayerTester checkPositiveResponseBody(){
         deserializePositiveResponseBody();
         checkPlayerId();
