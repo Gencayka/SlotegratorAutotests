@@ -15,14 +15,15 @@ public class RegPlayerTests extends ApiTests<RegPlayerTester> {
     @DisplayName("Positive")
     @ParameterizedTest
     @ValueSource(strings = {
-            "userAA",
-            "userBB",
-            "userCC"})
+            "userAAA",
+            "userBBB",
+            "userCCC"})
     public void test1(String playerUsername) throws IOException {
         tester
                 .sendPositiveRequest(playerUsername)
                 .checkPositiveResponseHttpCode()
                 .checkPositiveResponseValidation()
+                .checkPositiveResponseBody()
                 .assertAll();
     }
 

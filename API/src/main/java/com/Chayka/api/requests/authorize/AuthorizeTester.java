@@ -41,7 +41,6 @@ public final class AuthorizeTester extends RestApiTester<AuthorizeTester, Author
                 .build();
         String requestBodyAsString = mapper.writeValueAsString(requestBody);
 
-        //return sendPostRequest(requestHeaders, requestBodyAsString);
         return sendPostRequestWithBasicAuth(
                 getClientTokenTestConfig.getBasicAuthenticationUsername(),
                 getClientTokenTestConfig.getBasicAuthenticationPassword(),

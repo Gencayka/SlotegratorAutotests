@@ -27,7 +27,6 @@ public final class GetPlayerProfileTester extends RestApiTester<GetPlayerProfile
                                   @Autowired GetPlayerProfileTestConfig getPlayerProfileTestConfig,
                                   @Autowired AuthorizeTester authorizeTester) {
         super(jsonSchemas, testConfig.getBaseUrl() + getPlayerProfileTestConfig.getBasePath());
-        //this.jsonSchemas = jsonSchemas;
         this.getPlayerProfileTestConfig = getPlayerProfileTestConfig;
 
         this.authorizeTester = authorizeTester;

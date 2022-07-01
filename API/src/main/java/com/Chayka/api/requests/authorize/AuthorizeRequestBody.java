@@ -1,6 +1,5 @@
 package com.Chayka.api.requests.authorize;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;

@@ -88,8 +88,8 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
     public T sendPostRequest(@NotNull Map<String, String> requestHeaders,
                              @NotNull String requestBodyAsString) {
         RequestSpecification localRequestSpecification = RestAssured.given().spec(defaultRequestSpecification);
-        /*localRequestSpecification
-                .baseUri(requestUri);*/
+        localRequestSpecification
+                .baseUri(requestUri);
         testRequestResponse = sendPostRequest(requestHeaders, localRequestSpecification, requestBodyAsString);
         logger.info("Response body: " + testRequestResponse.asString());
         return (T) this;

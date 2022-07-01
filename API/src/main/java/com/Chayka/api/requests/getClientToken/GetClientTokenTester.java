@@ -18,7 +18,6 @@ import java.util.*;
 public final class GetClientTokenTester
         extends RestApiTester<GetClientTokenTester, GetClientTokenResponseBody> {
     private final TestConfig testConfig;
-    //private final JsonSchemas jsonSchemas;
     private final GetClientTokenTestConfig getClientTokenTestConfig;
 
     public GetClientTokenTester(@Autowired TestConfig testConfig,
@@ -26,7 +25,6 @@ public final class GetClientTokenTester
                                 @Autowired GetClientTokenTestConfig getClientTokenTestConfig) {
         super(jsonSchemas, testConfig.getBaseUrl() + getClientTokenTestConfig.getBasePath());
         this.testConfig = testConfig;
-        //this.jsonSchemas = jsonSchemas;
         this.getClientTokenTestConfig = getClientTokenTestConfig;
     }
 
