@@ -23,9 +23,9 @@ public class GetClientTokenTests extends ApiTests<GetClientTokenTester> {
 
     @Test
     @DisplayName("Client authentication failed")
-    public void test2() {
+    public void test2() throws IOException{
         tester
-                .sendRequest("bebebe")
+                .sendRequest("bebebe","fefefe")
                 .checkNegativeResponseHttpCode(CLIENT_AUTHENTICATION_FAILED)
                 .checkNegativeResponseValidation()
                 .checkNegativeResponseBody(CLIENT_AUTHENTICATION_FAILED)

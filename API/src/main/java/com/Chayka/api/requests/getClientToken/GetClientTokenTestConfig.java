@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class GetClientTokenTestConfig {
     private String basePath;
     private String basicAuthenticationUsername;
+    private String basicAuthenticationPassword;
     private Integer expectedPositiveResponseCode;
     private String expectedTokenType;
     private Integer expectedTokenExpirationTime;

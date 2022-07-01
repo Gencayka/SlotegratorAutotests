@@ -40,7 +40,9 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
                          @NotNull String requestUri) {
         this.logger = LoggerFactory.getLogger(RestApiTester.class.getSimpleName());
 
-        this.defaultRequestSpecification = RestAssured.given().contentType(ContentType.JSON);
+        this.defaultRequestSpecification = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .baseUri(requestUri);
         this.defaultHeaders = new HashMap<>();
         this.softAssertions = new SoftAssertions();
         this.mapper = new ObjectMapper();
@@ -86,8 +88,8 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
     public T sendPostRequest(@NotNull Map<String, String> requestHeaders,
                              @NotNull String requestBodyAsString) {
         RequestSpecification localRequestSpecification = RestAssured.given().spec(defaultRequestSpecification);
-        localRequestSpecification
-                .baseUri(requestUri);
+        /*localRequestSpecification
+                .baseUri(requestUri);*/
         testRequestResponse = sendPostRequest(requestHeaders, localRequestSpecification, requestBodyAsString);
         logger.info("Response body: " + testRequestResponse.asString());
         return (T) this;
@@ -95,6 +97,17 @@ public abstract class RestApiTester<T extends RestApiTester<T, B>, B extends Res
 
     public T sendPostRequest(@NotNull String requestBodyAsString) {
         return sendPostRequest(defaultHeaders, requestBodyAsString);
+    }
+
+    public T sendPostRequestWithBasicAuth(@NotNull String username,
+                                          @NotNull String password,
+                             @NotNull String requestBodyAsString) {
+        String valueToEncode = username + ":" + password;
+        Map<String,String> requestHeaders = new HashMap<>(defaultHeaders);
+        requestHeaders.put(
+                "Authorization",
+                "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes()));
+        return sendPostRequest(requestHeaders, requestBodyAsString);
     }
 
     public T sendPostRequestWithBearerToken(@NotNull String token,

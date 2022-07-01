@@ -3,6 +3,7 @@ commons:
 get-client-token:
   base-path: /v2/oauth2/token
   basic-authentication-username: front_2d6b0a8391742f5d789d7d915755e09e
+  basic-authentication-password:
   expected-positive-response-code: 200
   expected-token-type: Bearer
   expected-token-expiration-time: 86400

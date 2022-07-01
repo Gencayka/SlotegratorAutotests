@@ -31,28 +31,21 @@ public final class GetClientTokenTester
     }
 
     public GetClientTokenTester sendPositiveRequest() throws IOException {
-        Map<String, String> requestHeaders = new HashMap<>();
-        //TODO
-        requestHeaders.put(
-                "Authorization",
-                //"Basic " + Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)));
-                "Basic ZnJvbnRfMmQ2YjBhODM5MTc0MmY1ZDc4OWQ3ZDkxNTc1NWUwOWU6");
+        return sendRequest(getClientTokenTestConfig.getBasicAuthenticationUsername(), getClientTokenTestConfig.getBasicAuthenticationPassword());
+    }
 
+    public GetClientTokenTester sendRequest(@NotNull String username,
+                                            @NotNull String password) throws IOException{
         GetClientTokenRequestBody requestBody = GetClientTokenRequestBody.builder()
                 .grantType(getClientTokenTestConfig.getDefaultGrantType())
                 .scope(getClientTokenTestConfig.getDefaultScope())
                 .build();
         String requestBodyAsString = mapper.writeValueAsString(requestBody);
 
-        return sendPostRequest(requestHeaders, requestBodyAsString);
-    }
-
-    public GetClientTokenTester sendRequest(@NotNull String username) {
-        Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put(
-                "Authorization",
-                "Basic " + Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)));
-        return sendPostRequest(requestHeaders, "{\"grant_type\":\"client_credentials\",\"scope\":\"guest:default\"}");
+        return sendPostRequestWithBasicAuth(
+                username,
+                password,
+                requestBodyAsString);
     }
 
     public GetClientTokenTester checkPositiveResponseHttpCode() {

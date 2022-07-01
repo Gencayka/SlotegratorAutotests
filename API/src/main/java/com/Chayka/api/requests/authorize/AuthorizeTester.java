@@ -4,6 +4,7 @@ import com.Chayka.api.JsonSchemas;
 import com.Chayka.api.TestConfig;
 import com.Chayka.api.commons.ResponseBodyDeserializer;
 import com.Chayka.api.commons.RestApiTester;
+import com.Chayka.api.requests.getClientToken.GetClientTokenTestConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -16,29 +17,23 @@ import java.util.Map;
 @Scope("prototype")
 public final class AuthorizeTester extends RestApiTester<AuthorizeTester, AuthorizeResponseBody> {
     private final TestConfig testConfig;
-    //private final JsonSchemas jsonSchemas;
     private final AuthorizeTestConfig authorizeTestConfig;
+    private final GetClientTokenTestConfig getClientTokenTestConfig;
 
     public AuthorizeTester(@Autowired TestConfig testConfig,
                            @Autowired JsonSchemas jsonSchemas,
-                           @Autowired AuthorizeTestConfig authorizeTestConfig) {
+                           @Autowired AuthorizeTestConfig authorizeTestConfig,
+                           @Autowired GetClientTokenTestConfig getClientTokenTestConfig) {
         super(jsonSchemas, testConfig.getBaseUrl() + authorizeTestConfig.getBasePath());
         this.testConfig = testConfig;
-        //this.jsonSchemas = jsonSchemas;
         this.authorizeTestConfig = authorizeTestConfig;
+        this.getClientTokenTestConfig = getClientTokenTestConfig;
     }
 
     public AuthorizeTester sendRequest(String grantType,
                                        String username,
                                        String password)
             throws IOException {
-        Map<String, String> requestHeaders = new HashMap<>();
-        //TODO
-        requestHeaders.put(
-                "Authorization",
-                //"Basic " + Base64.getEncoder().encodeToString(username.getBytes(StandardCharsets.UTF_8)));
-                "Basic ZnJvbnRfMmQ2YjBhODM5MTc0MmY1ZDc4OWQ3ZDkxNTc1NWUwOWU6");
-
         AuthorizeRequestBody requestBody = AuthorizeRequestBody.builder()
                 .grantType(grantType)
                 .username(username)
@@ -46,7 +41,11 @@ public final class AuthorizeTester extends RestApiTester<AuthorizeTester, Author
                 .build();
         String requestBodyAsString = mapper.writeValueAsString(requestBody);
 
-        return sendPostRequest(requestHeaders, requestBodyAsString);
+        //return sendPostRequest(requestHeaders, requestBodyAsString);
+        return sendPostRequestWithBasicAuth(
+                getClientTokenTestConfig.getBasicAuthenticationUsername(),
+                getClientTokenTestConfig.getBasicAuthenticationPassword(),
+                requestBodyAsString);
     }
 
     public AuthorizeTester sendRequest(String username,

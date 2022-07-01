@@ -15,9 +15,9 @@ public class RegPlayerTests extends ApiTests<RegPlayerTester> {
     @DisplayName("Positive")
     @ParameterizedTest
     @ValueSource(strings = {
-            "userAB",
-            "userCD",
-            "userEF"})
+            "userAA",
+            "userBB",
+            "userCC"})
     public void test1(String playerUsername) throws IOException {
         tester
                 .sendPositiveRequest(playerUsername)
