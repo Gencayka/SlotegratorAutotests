@@ -33,5 +33,5 @@ Lombok | Reducing amount of junk code
 Logback | Logging
 
 Short description:
-<br>Gees, that Cucumber is weird
+<br>Geez, that Cucumber is weird
 <br>Cucumber is used to describe test cases. Page Objects are used to store methods to interact with different pages. If some UI element needs to be searched by CSS class, then it's written to corresponded enum for easer updating in case of UI changes. All pages have only one config class
