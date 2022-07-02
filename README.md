@@ -17,7 +17,8 @@ Logback | Logging
 
 Short description:
 <br>Every request has its own tester. Since tester stores test results info a new tester is created for each test case. Each tester is inherited from abstract RestApiTester, that contains some common methods and fields. RestApiTester contains generic parameters for *Tester (so common methods could return corresponded types) and *ResponseBody (for storing deserialized response body)
-Also every request has its own config class (all configs are parsed from single application.yml file)
+<br>Also every request has its own config class (all configs are parsed from single application.yml file)
+<br>Since I don't have a DB connection I use hardcoded test data or test data from condig files to establish test cases
 
 # UI tests
 To launch tests, run the RunCucumberTest class
